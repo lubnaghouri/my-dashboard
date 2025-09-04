@@ -1,18 +1,18 @@
 
 
 
-import React from 'react';
-import Sidebar from './Sidebar';
-import Dashboard from './Dashboard';
-import Products from './Products';
+import Sidebar from '../components/Sidebar';
+import Navbar from '../components/Navbar';
+import { Outlet } from 'react-router-dom';
+
 
 function DasboardLayout({ children }) {
   return (
     <div className="flex h-screen">
       <Sidebar />
       <main className="flex-1 bg-gray-50 p-8">
-        {children ? children : <Dashboard/> }
-        <Products/>
+      <Navbar/>
+        <Outlet/>
       </main>
     </div>
   );

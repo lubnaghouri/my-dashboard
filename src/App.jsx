@@ -3,6 +3,7 @@ import './App.css'
 import DasboardLayout from './dashboard/DasboardLayout'
 import Dashboard from './dashboard/Dashboard'
 import Products from './dashboard/Products'
+import Analytics from './dashboard/Analytics' 
 import Login from './pages/Login'
 import Notfound from './pages/Notfound'
 

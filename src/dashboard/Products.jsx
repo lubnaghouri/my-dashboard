@@ -1,74 +1,62 @@
 
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
-import { BarChart, RefreshCw, Lock, Percent } from 'lucide-react';
 
 function Products() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch('https://68b91e2ab7154050432a09c2.mockapi.io/api/products')
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setError('Failed to fetch products');
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <div className="p-4">Loading...</div>;
+    if (error) return <div className="p-4 text-red-500">{error}</div>;
+
     return (
-        <div>
-            <div className="flex gap-6 py-4">
-                {/* Total Revenue */}
-                <div className="bg-white rounded-xl shadow p-6 flex-1 min-w-[280px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gray-900 p-2 rounded-lg"><BarChart size={22} className="text-white" /></span>
-                            <span className="font-semibold text-gray-700">Total Revenue</span>
-                        </div>
-                        <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                    <div className="text-3xl font-bold text-gray-900 mb-2">$245,678</div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /></svg>
-                            12% (+$26,800)
-                        </span>
-                        {/* Simple trend line SVG */}
-                        <svg width="60" height="32" viewBox="0 0 60 32"><path d="M2 30 Q20 10 30 20 Q40 30 58 6" stroke="green" strokeWidth="2" fill="none" /></svg>
-                    </div>
-                </div>
-                {/* Average Order Value */}
-                <div className="bg-white rounded-xl shadow p-6 flex-1 min-w-[280px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gray-900 p-2 rounded-lg"><Lock size={22} className="text-white" /></span>
-                            <span className="font-semibold text-gray-700">Average Order Value</span>
-                        </div>
-                        <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                    <div className="text-3xl font-bold text-gray-900 mb-2">$67.42</div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /></svg>
-                            8% (+$4.85)
-                        </span>
-                        <svg width="60" height="32" viewBox="0 0 60 32"><path d="M2 30 Q20 20 30 10 Q40 20 58 6" stroke="green" strokeWidth="2" fill="none" /></svg>
-                    </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow p-6 flex-1 min-w-[280px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gray-900 p-2 rounded-lg"><Percent size={22} className="text-white" /></span>
-                            <span className="font-semibold text-gray-700">Conversion Rate</span>
-                        </div>
-                        <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                    <div className="text-3xl font-bold text-gray-900 mb-2">4.8%</div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /></svg>
-                            0.3% (+24 Orders)
-                        </span>
-                        <svg width="60" height="32" viewBox="0 0 60 32"><path d="M2 30 Q20 25 30 15 Q40 25 58 6" stroke="green" strokeWidth="2" fill="none" /></svg>
-                    </div>
-                </div>
-            </div>
-
-
-            
+        <div className="p-4">
+            <table className="min-w-full border border-gray-300">
+                <thead>
+                    <tr className="bg-gray-100">
+                        <th className="border px-4 py-2">Image</th>
+                        <th className="border px-4 py-2">Title</th>
+                        <th className="border px-4 py-2">Category</th>
+                        <th className="border px-4 py-2">Price</th>
+                        <th className="border px-4 py-2">Rating</th>
+                        <th className="border px-4 py-2">Count</th>
+                        <th className="border px-4 py-2">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {products.map(product => (
+                        <tr key={product.id}>
+                            <td className="border px-4 py-2"><img src={product.image} alt={product.title} style={{ width: '50px' }} /></td>
+                            <td className="border px-4 py-2">{product.name}</td>
+                            <td className="border px-4 py-2">${product.price}</td>
+                            <td className="border px-4 py-2">{product.rating?.rate}</td>
+                            <td className="border px-4 py-2">{product.description}</td>
+                            <td className="px-4 py-2">
+                                <Link className="bg-blue-600 hover:bg-blue-700 text-white px-3 me-2 py-1 rounded">View</Link>
+                                <Link className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 me-2 py-1 rounded">Edit</Link>
+                                <Link onClick={() => handleDelete(product.id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Del</Link>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
-
     );
 }
 

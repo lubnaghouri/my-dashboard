@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { name: "Overview", icon: LayoutDashboard, to: "/overview" },
-  { name: "Analytics", icon: BarChart, to: "/analytics", active: false },
+  { name: "Overview", icon: LayoutDashboard, to: "/DashboardLayout" },
+  { name: "Analytics", icon: BarChart, to: "/", active: true },
   { name: "Products", icon: Box, to: "/products" },
   { name: "Customers", icon: Users, to: "/customers" },
   { name: "Orders", icon: ShoppingCart, to: "/orders", badge: 8 },
