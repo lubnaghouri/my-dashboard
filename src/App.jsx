@@ -17,7 +17,7 @@ function App() {
 
           <Route index element={<Dashboard />} />
           <Route path='products' element={<Products />} />
-
+          <Route path='analytics' element={<Analytics/>} />    
         </Route>
 
         <Route path='login' element={<Login/>}/>
