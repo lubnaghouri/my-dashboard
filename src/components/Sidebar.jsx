@@ -16,6 +16,7 @@ const navItems = [
   { name: "Overview", icon: LayoutDashboard, to: "/DashboardLayout" },
   { name: "Analytics", icon: BarChart, to: "/", active: true },
   { name: "Products", icon: Box, to: "/products" },
+  { name: "Create Product", icon: BarChart, to: "products/create" },
   { name: "Customers", icon: Users, to: "/customers" },
   { name: "Orders", icon: ShoppingCart, to: "/orders", badge: 8 },
   { name: "Marketing", icon: Megaphone, to: "/marketing" },
