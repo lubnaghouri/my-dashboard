@@ -2,7 +2,6 @@
 
 import { Search, CalendarDays, ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
-import SignupForm from './SignupForm';
 
 const Navbar = () => {
     const [showSignup, setShowSignup] = useState(false);
