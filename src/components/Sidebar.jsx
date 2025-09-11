@@ -9,28 +9,45 @@ import {
   Layers,
   FileText,
   Bell,
-  Settings,
+  LogOut,
 } from "lucide-react";
+import AuthContext from "../context/AuthContext";
+import { useContext } from "react";
 
 const navItems = [
-  { name: "Overview", icon: LayoutDashboard, to: "/overview" },
-  { name: "Analytics", icon: BarChart, to: "/analytics", active: false },
+  { name: "Overview", icon: LayoutDashboard, to: "/DashboardLayout" },
+  { name: "Analytics", icon: BarChart, to: "/", active: true },
   { name: "Products", icon: Box, to: "/products" },
+  { name: "Create Product", icon: BarChart, to: "products/create" },
   { name: "Customers", icon: Users, to: "/customers" },
   { name: "Orders", icon: ShoppingCart, to: "/orders", badge: 8 },
   { name: "Marketing", icon: Megaphone, to: "/marketing" },
   { name: "Inventory", icon: Layers, to: "/inventory" },
   { name: "Reports", icon: FileText, to: "/reports" },
   { name: "Notifications", icon: Bell, to: "/notifications", badge: 4 },
-  { name: "Settings", icon: Settings, to: "/settings" },
+  { name: "Logout", icon: LogOut },
 ];
 
 const Sidebar = () => {
+
+  const { logout } = useContext(AuthContext);
   return (
     <aside className="bg-white h-screen w-56 flex flex-col py-8 border-r">
       <nav className="flex flex-col gap-2">
         {navItems.map((item) => {
           const Icon = item.icon;
+          if (item.name === "Logout") {
+            return (
+              <button
+                key={item.name}
+                onClick={logout}
+                className="flex items-center gap-3 px-6 py-3 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 relative transition-all duration-150 font-medium text-base w-full text-left"
+              >
+                <Icon size={22} />
+                <span>{item.name}</span>
+              </button>
+            );
+          }
           return (
             <NavLink
               key={item.name}

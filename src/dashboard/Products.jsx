@@ -1,74 +1,86 @@
 
 
-import React from 'react'
-
-import { BarChart, RefreshCw, Lock, Percent } from 'lucide-react';
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
+import { Spin } from 'antd';
+import axios from 'axios';
 
 function Products() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+
+
+    const handleDelete = (id) => {
+        setLoading(true);
+        axios.delete(`https://68b91e2ab7154050432a09c2.mockapi.io/api/products/${id}`)
+            .then((responce) => {
+                getAllproducts();
+            }).finally(() => {
+                setLoading(false);
+            })
+
+    }
+
+    const getAllproducts = () => {
+
+        setLoading(true);
+        axios.get(`https://68b91e2ab7154050432a09c2.mockapi.io/api/products`)
+            .then((response) => {
+                setProducts(response.data)
+            }).finally(() => {
+                setLoading(false);
+            })
+
+    };
+
+    useEffect(() => {
+        getAllproducts();
+
+    }, []);
+
     return (
-        <div>
-            <div className="flex gap-6 py-4">
-                {/* Total Revenue */}
-                <div className="bg-white rounded-xl shadow p-6 flex-1 min-w-[280px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gray-900 p-2 rounded-lg"><BarChart size={22} className="text-white" /></span>
-                            <span className="font-semibold text-gray-700">Total Revenue</span>
-                        </div>
-                        <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                    <div className="text-3xl font-bold text-gray-900 mb-2">$245,678</div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /></svg>
-                            12% (+$26,800)
-                        </span>
-                        {/* Simple trend line SVG */}
-                        <svg width="60" height="32" viewBox="0 0 60 32"><path d="M2 30 Q20 10 30 20 Q40 30 58 6" stroke="green" strokeWidth="2" fill="none" /></svg>
-                    </div>
-                </div>
-                {/* Average Order Value */}
-                <div className="bg-white rounded-xl shadow p-6 flex-1 min-w-[280px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gray-900 p-2 rounded-lg"><Lock size={22} className="text-white" /></span>
-                            <span className="font-semibold text-gray-700">Average Order Value</span>
-                        </div>
-                        <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                    <div className="text-3xl font-bold text-gray-900 mb-2">$67.42</div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /></svg>
-                            8% (+$4.85)
-                        </span>
-                        <svg width="60" height="32" viewBox="0 0 60 32"><path d="M2 30 Q20 20 30 10 Q40 20 58 6" stroke="green" strokeWidth="2" fill="none" /></svg>
-                    </div>
-                </div>
+        <div className="overflow-x-auto mt-6">
 
-                <div className="bg-white rounded-xl shadow p-6 flex-1 min-w-[280px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-gray-900 p-2 rounded-lg"><Percent size={22} className="text-white" /></span>
-                            <span className="font-semibold text-gray-700">Conversion Rate</span>
-                        </div>
-                        <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                    <div className="text-3xl font-bold text-gray-900 mb-2">4.8%</div>
-                    <div className="flex items-center justify-between">
-                        <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="green" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /></svg>
-                            0.3% (+24 Orders)
-                        </span>
-                        <svg width="60" height="32" viewBox="0 0 60 32"><path d="M2 30 Q20 25 30 15 Q40 25 58 6" stroke="green" strokeWidth="2" fill="none" /></svg>
-                    </div>
-                </div>
-            </div>
+            {
+                loading && <div className="text-center py-3"><Spin /></div>
+            }
 
+            {
+                (products.length > 0) ? <table className="min-w-full bg-white rounded-xl shadow">
+                    <thead className="bg-gray-100">
+                        <tr>
+                            <th className="px-4 py-2 text-left">Product Name</th>
+                            <th className="px-4 py-2 text-left">Price</th>
+                            <th className="px-4 py-2 text-left">Rating</th>
+                            <th className="px-4 py-2 text-left">Description</th>
+                            <th className="px-4 py-2 text-left">Image</th>
+                            <th className="px-4 py-2 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products.map(product => (
+                            <tr key={product.id} className="border-b hover:bg-gray-50">
+                                <td className="px-4 py-2 font-medium text-gray-800 max-w-xs truncate">{product.name}</td>
+                                <td className="px-4 py-2 text-green-600 font-semibold">${product.price}</td>
+                                <td className="px-4 py-2 text-yellow-600 font-semibold">{product.rating}</td>
+                                <td className="px-4 py-2 max-w-sm truncate">{product.description}</td>
+                                <td className="px-4 py-2">
+                                    <img src={product.image} className="h-12 w-12 object-contain rounded" />
+                                </td>
 
-            
+                                <td className="px-4 py-2">
+                                    <Link className="bg-blue-600 hover:bg-blue-700 text-white px-3 me-2 py-2 rounded">View</Link>
+                                    <Link to={`edit/${product.id}`} className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 me-2 py-2 rounded">Edit</Link>
+                                    <Link onClick={() => handleDelete(product.id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">Del</Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table> : null
+            }
+
         </div>
-
     );
 }
 
