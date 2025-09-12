@@ -1,26 +1,29 @@
 
 
 import { Button, Form, Input, InputNumber } from 'antd';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import restClient from "../services/restClient";
 const { TextArea } = Input;
 
 const Create = () => {
 
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const navigator = useNavigate();
 
 
 
     const onFinish = (values) => {
         setLoading(true);
-        axios.post('https://68b91e2ab7154050432a09c2.mockapi.io/api/products',  values).then(function (response) {
+       restClient.post('/product/create', values)
+        .then(function (response) {
                console.log(response.data);
                     navigator('/products');
 
             }).catch(function (error) {
                 console.log(error);
+                 setError(error.response?.data?.message || "Something went wrong. Please try again later.");
 
             }).finally( () => {
                 setLoading(false);

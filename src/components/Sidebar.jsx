@@ -37,10 +37,11 @@ const Sidebar = () => {
         {navItems.map((item) => {
           const Icon = item.icon;
           if (item.name === "Logout") {
+            console.log(item.name);
             return (
               <button
                 key={item.name}
-                onClick={logout}
+                onClick = {logout}
                 className="flex items-center gap-3 px-6 py-3 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 relative transition-all duration-150 font-medium text-base w-full text-left"
               >
                 <Icon size={22} />
