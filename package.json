@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd": "^5.27.2",
+    "@ant-design/charts": "^2.6.4",
+    "antd": "^5.27.3",
     "autoprefixer": "^10.4.21",
     "axios": "^1.11.0",
     "lucide-react": "^0.542.0",

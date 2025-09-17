@@ -26,7 +26,7 @@ function App() {
 
           <Route index element={<Dashboard />} />
           <Route path='products' element={<Products />} />
-          <Route path='analytics' element={<Analytics />} />
+          <Route path='analytics' element={<Analytics/>} />
           <Route path='products/create' element={<Create />} />
           <Route path='products/edit/:id' element={<EditForm />} />
         </Route>

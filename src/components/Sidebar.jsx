@@ -15,8 +15,8 @@ import AuthContext from "../context/AuthContext";
 import { useContext } from "react";
 
 const navItems = [
-  { name: "Overview", icon: LayoutDashboard, to: "/DashboardLayout" },
-  { name: "Analytics", icon: BarChart, to: "/", active: true },
+  { name: "Overview", icon: LayoutDashboard, to: "/" },
+  { name: "Analytics", icon: BarChart, to: "/analytics", active: true },
   { name: "Products", icon: Box, to: "/products" },
   { name: "Create Product", icon: BarChart, to: "products/create" },
   { name: "Customers", icon: Users, to: "/customers" },
@@ -37,7 +37,7 @@ const Sidebar = () => {
         {navItems.map((item) => {
           const Icon = item.icon;
           if (item.name === "Logout") {
-            console.log(item.name);
+      
             return (
               <button
                 key={item.name}

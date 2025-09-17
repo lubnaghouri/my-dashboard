@@ -1,10 +1,8 @@
 
-import axios from "axios";
 import AuthContext from "./AuthContext"
-
-
+import restClient from "../services/restClient";
 import { useState, useEffect } from "react";
-import SignupForm from "../pages/SignupForm";
+
 
 const AuthContextPovider = ({ children }) => {
     const [loading, setLoading] = useState(false);
@@ -17,8 +15,6 @@ const AuthContextPovider = ({ children }) => {
         const storedUser = localStorage.getItem("user");
 
         if (storedToken && storedUser) {
-            console.log("Stored user:", storedToken, storedUser);
-
             setToken(storedToken);
             setUser(storedUser);
         }
@@ -35,7 +31,7 @@ const AuthContextPovider = ({ children }) => {
 
 
         try {
-            const response = await axios.post('http://localhost:9000/user/admin-login', Credentials);
+            const response = await restClient.post('/user/admin-login', Credentials);
 
             setUser(response.data.user);
             setToken(response.data.token);
@@ -63,7 +59,7 @@ const AuthContextPovider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ login, loading, user, token, setToken, setUser, logout, SignupForm }}>
+        <AuthContext.Provider value={{ login, loading, user, token, setToken, setUser, logout}}>
             {children}
         </AuthContext.Provider>
     );
