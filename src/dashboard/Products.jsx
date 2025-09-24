@@ -1,87 +1,88 @@
 
-
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Spin } from 'antd';
-import axios from 'axios';
-
-function Products() {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
+import restClient from "../services/restClient";
 
 
+const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  // Get token from localStorage or context if available
+  const token = localStorage.getItem("token");
 
-    const handleDelete = (id) => {
-        setLoading(true);
-        axios.delete(`https://68b91e2ab7154050432a09c2.mockapi.io/api/products/${id}`)
-            .then((responce) => {
-                getAllproducts();
-            }).finally(() => {
-                setLoading(false);
-            })
 
-    }
+  const handleDelete = (id) => {
+    setLoading(true);
+    restClient.delete(`/product/delete/${id}`)
+      .then((response) => {
+        getAllProducts();
+      }).finally(() => setLoading(false));
+  }
 
-    const getAllproducts = () => {
 
-        setLoading(true);
-        axios.get(`https://68b91e2ab7154050432a09c2.mockapi.io/api/products`)
-            .then((response) => {
-                setProducts(response.data)
-            }).finally(() => {
-                setLoading(false);
-            })
+  const getAllProducts = () => {
+    setLoading(true);
+    restClient.get('/product/all')
+      .then((response) => {
 
-    };
+        console.log(response);
 
-    useEffect(() => {
-        getAllproducts();
+        setProducts(response.data.products);
 
-    }, []);
+      }).finally(() => setLoading(false));
+  }
 
-    return (
-        <div className="overflow-x-auto mt-6">
+  useEffect(() => {
 
-            {
-                loading && <div className="text-center py-3"><Spin /></div>
-            }
+    getAllProducts();
 
-            {
-                (products.length > 0) ? <table className="min-w-full bg-white rounded-xl shadow">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="px-4 py-2 text-left">Product Name</th>
-                            <th className="px-4 py-2 text-left">Price</th>
-                            <th className="px-4 py-2 text-left">Rating</th>
-                            <th className="px-4 py-2 text-left">Description</th>
-                            <th className="px-4 py-2 text-left">Image</th>
-                            <th className="px-4 py-2 text-left">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map(product => (
-                            <tr key={product.id} className="border-b hover:bg-gray-50">
-                                <td className="px-4 py-2 font-medium text-gray-800 max-w-xs truncate">{product.name}</td>
-                                <td className="px-4 py-2 text-green-600 font-semibold">${product.price}</td>
-                                <td className="px-4 py-2 text-yellow-600 font-semibold">{product.rating}</td>
-                                <td className="px-4 py-2 max-w-sm truncate">{product.description}</td>
-                                <td className="px-4 py-2">
-                                    <img src={product.image} className="h-12 w-12 object-contain rounded" />
-                                </td>
+  }, []);
 
-                                <td className="px-4 py-2">
-                                    <Link className="bg-blue-600 hover:bg-blue-700 text-white px-3 me-2 py-2 rounded">View</Link>
-                                    <Link to={`edit/${product.id}`} className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 me-2 py-2 rounded">Edit</Link>
-                                    <Link onClick={() => handleDelete(product.id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">Del</Link>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table> : null
-            }
 
-        </div>
-    );
+  return (
+    <div className="overflow-x-auto mt-6">
+
+      {
+        loading && <div className="text-center py-3"><Spin /></div>
+      }
+
+      {
+        (products.length > 0) ? <table className="min-w-full bg-white rounded-xl shadow">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 text-left">Image</th>
+              <th className="px-4 py-2 text-left">Product Name</th>
+              <th className="px-4 py-2 text-left">Rating</th>
+              <th className="px-4 py-2 text-left">Price</th>
+              <th className="px-4 py-2 text-left">Description</th>
+              <th className="px-4 py-2 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map(product => (
+              <tr key={product._id} className="border-b hover:bg-gray-50">
+                <td className="px-4 py-2">
+                  {/* <img src={product.image} alt={product.name} className="h-12 w-12 object-contain rounded" /> */}
+                  ----
+                </td>
+                <td className="px-4 py-2 font-medium text-gray-800 max-w-xs truncate">{product.name}</td>
+                <td className="px-4 py-2 text-yellow-500 font-semibold">{product.rating}</td>
+                <td className="px-4 py-2 text-green-600 font-semibold">${product.price}</td>
+                <td className="px-4 py-2 text-red-600 max-w-xs truncate">{product.description}</td>
+                <td className="px-4 py-2">
+                  <Link className="bg-blue-600 hover:bg-blue-700 text-white px-3 me-2 py-1 rounded">View</Link>
+                  <Link to={`edit/${product.id}`} className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 me-2 py-1 rounded">Edit</Link>
+                  <Link onClick={() => handleDelete(product._id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Del</Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table> : null
+      }
+
+    </div>
+  );
 }
 
 export default Products

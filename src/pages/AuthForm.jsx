@@ -1,89 +1,76 @@
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-export default function AuthForm() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [message, setMessage] = useState("");
-  const { login, signup, loading } = useContext(AuthContext);
+
+const AuthForm = () => {
+  const [error, setError] = useState(null);
+  const { login, user, token } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
-    if (isLogin) {
-      const response = await login(values);
-      if (response?.status === "success") {
-        setMessage("Login successful! 🎉");
-        setTimeout(() => navigate("/"), 1000);
-      } else {  
-        setMessage(response?.message || "Login failed. Please try again.");
-      }
+    const result = await login(values);
+    if (result.status == "OK") {
+      navigate('/');
+
     } else {
-      const response = await signup(values);
-      if (response?.status === "success") {
-        setMessage("Signup successful! You can now log in.");
-        setIsLogin(true);
-      } else {
-        setMessage(response?.message || "Signup failed. Please try again.");
-      }
+      setError("Invalid login credentials or You are not authorized to access this resource.");
     }
   };
 
+  useEffect(() => {
+    if (token && user) {
+      navigate('/');
+    }
+  }, [token, user]);
+
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="bg-gray-800 p-6 rounded-xl shadow-md w-80 text-white">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          {isLogin ? "Login" : "Sign Up"}
-        </h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-700">
+  <div className="bg-white p-10 rounded-xl shadow w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <Form
-          name={isLogin ? "login" : "signup"}
-          layout="vertical"
+          name="login"
+          initialValues={{ remember: true }}
           onFinish={onFinish}
-          autoComplete="off"
+          layout="vertical"
         >
           <Form.Item
-            label="Email"
+            label="Email Address"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }, { type: "email", message: "Invalid email!" }]}
+            rules={[
+              { required: true, message: 'Please input your email address!' },
+              { type: 'email', message: 'Please enter a valid email address!' }
+            ]}
           >
-            <Input type="email" placeholder="Email" />
+            <Input />
           </Form.Item>
+
           <Form.Item
             label="Password"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" },]}
+            rules={[{ required: true, message: 'Please input your password!' }]}
           >
-            <Input.Password placeholder="Password" />
+            <Input.Password />
           </Form.Item>
+
+          {error && <div className="mb-4 text-red-500">{error}</div>}
+
           <Form.Item>
             <Button type="primary" htmlType="submit" className="w-full" loading={loading}>
-              {isLogin ? "Login" : "Sign Up"}
+              Log in
             </Button>
           </Form.Item>
         </Form>
-        <p className="mt-3 text-sm text-gray-400 text-center">
-          {isLogin ? "Don't have an account?" : "Already have an account?"} {" "}
-          {isLogin ? (
-            <button
-              onClick={() => navigate('/signup')}
-              className="text-blue-400 hover:underline"
-            >
-              Sign Up
-            </button>
-          ) : (
-            <button
-              onClick={() => navigate('/login')}
-              className="text-blue-400 hover:underline"
-            >
-              Login
-            </button>
-          )}
-        </p>
-        {message && (
-          <p className="mt-3 text-center text-yellow-400">{message}</p>
-        )}
       </div>
     </div>
-  );
-}
+
+
+  )
+};
+
+export default AuthForm;
+
